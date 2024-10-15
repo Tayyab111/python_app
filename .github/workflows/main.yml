@@ -62,13 +62,11 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
  #-----------------------------------
       - name: Deploy Amazon ECS task definition
+      # Update the ECS service with the new task definition
         run: |
-          # Update the ECS service with the new task definition
           aws ecs update-service \
            --cluster python_ecs_cluster \
-                                                #${{ vars.ECS_CLUSTER }} \
             --service python_service \
-                                                #${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.task-def.outputs.task-definition }} \
             --force-new-deployment \
             --region us-east-1 #$AWS_REGION
