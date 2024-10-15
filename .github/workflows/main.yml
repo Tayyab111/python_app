@@ -55,6 +55,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
+          # copy .json file from task-definition and past in the github repo.
           task-definition: ./ecs_task_definition.json
           #${{ vars.ECS_TASK_DEFINITION }}
           container-name: ${{ vars.CONTAINER_NAME }}
@@ -64,8 +65,10 @@ jobs:
         run: |
           # Update the ECS service with the new task definition
           aws ecs update-service \
-           --cluster ${{ vars.ECS_CLUSTER }} \
-            --service ${{ vars.ECS_SERVICE }} \
+           --cluster python_ecs_cluster
+                                                #${{ vars.ECS_CLUSTER }} \
+            --service python_service 
+                                                #${{ vars.ECS_SERVICE }} \
             --task-definition ${{ steps.task-def.outputs.task-definition }} \
             --force-new-deployment \
             --region us-east-1 #$AWS_REGION
