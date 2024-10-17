@@ -69,4 +69,4 @@ jobs:
             --service python_service \
             --task-definition ${{ steps.task-def.outputs.task-definition }} \
             --force-new-deployment \
-            --region us-east-1 #$AWS_REGION
+            --region us-east-1 #$AWS_REGION 
