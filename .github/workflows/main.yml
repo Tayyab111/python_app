@@ -75,7 +75,7 @@ jobs:
         run: |
          jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
          --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
-            '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
+            '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
             
 
       # - name: Register new task definition
