@@ -76,26 +76,30 @@ jobs:
          jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
          --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
             '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)' ecs_task_definition.json > new_task_definition.json
+            
 
-      #- name: Debug Task Definition JSON
-      #  run: cat new_task_definition.json
-
+      # - name: Register new task definition
+      #   id: register-task-def
+      #   run: |
+      #       aws ecs register-task-definition --cli-input-json file://new_task_definition.json
       - name: Register new task definition
         id: register-task-def
         run: |
-            aws ecs register-task-definition --cli-input-json file://new_task_definition.json
+          TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://new_task_definition.json --query 'taskDefinition.taskDefinitionArn' --output text)
+          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 
  #-----------------------------------
       - name: Log task definition ARN
         run: |
-          echo "Task Definition ARN: $(jq -r '.taskDefinitionArn' new_task_definition.json)"
+          echo "Task Definition ARN: ${{ env.TASK_DEF_ARN }}"
 
       - name: Deploy Amazon ECS task definition
       # Update the ECS service with the new task definition
         run: |
           aws ecs update-service \
            --cluster python_ecs_cluster \
-            --service python_service \
-            --task-definition $(jq -r '.taskDefinitionArn' new_task_definition.json) \
-            --force-new-deployment \
-            --region us-east-1 #$AWS_REGION 
+           --service python_service \
+           --task-definition ${{ env.TASK_DEF_ARN }} \
+           --force-new-deployment \
+           --region us-east-1 #$AWS_REGION 
+#--task-definition ${{ env.TASK_DEF_ARN }} \
