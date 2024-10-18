@@ -92,6 +92,6 @@ jobs:
           aws ecs update-service \
            --cluster python_ecs_cluster \
             --service python_service \
-            --task-definition $(jq -r '.taskDefinitionArn' new_task_definition.json) \    #${{ steps.task-def.outputs.task-definition }} \
+            --task-definition $(jq -r '.taskDefinitionArn' new_task_definition.json) \
             --force-new-deployment \
             --region us-east-1 #$AWS_REGION 
