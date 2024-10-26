@@ -15,10 +15,10 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
-ENV MYSQL_HOST=localhost
-ENV MYSQL_USER=root
-ENV MYSQL_PASSWORD=root
-ENV MYSQL_DATABASE=techienaman
+# ENV MYSQL_HOST=localhost
+# ENV MYSQL_USER=root
+# ENV MYSQL_PASSWORD=root
+# ENV MYSQL_DATABASE=techienaman
 EXPOSE 8000
 
 #CMD ["uvicorn", "demo:app", "--port", "8000", "--reload"]
