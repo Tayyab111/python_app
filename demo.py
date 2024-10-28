@@ -9,8 +9,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import os
 host = os.environ['DB_HOST']
 user = os.environ['DB_USER']
-#password = os.environ["DB_PASSWORD"]
-password = "3f6K9oX9"
+password = os.environ["DB_PASSWORD"]
+#password = "3f6K9oX9"
 database = os.environ["DB_NAME"]
 
 # Function to connect to MySQL
@@ -24,7 +24,7 @@ def connect_to_mysql():
             database=database
         )
         if connection.is_connected():
-            return "Connection Established successfully"
+            return "Connection Established successfully and password issue in container is fixed."
     except mysql.connector.Error as err:
         return f"Error: {err}"
     finally:
