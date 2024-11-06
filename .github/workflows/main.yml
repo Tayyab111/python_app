@@ -51,15 +51,6 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 #-----------------------------------------------------------
-      # - name: Fill in the new image ID in the Amazon ECS task definition
-      #   id: task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
-      #   with:
-      #     # copy .json file from task-definition and past in the github repo.
-      #     task-definition: ./ecs_task_definition.json
-      #     #${{ vars.ECS_TASK_DEFINITION }}
-      #     container-name: ${{ vars.CONTAINER_NAME }}
-      #     image: ${{ steps.build-image.outputs.image }}
       - name: Install AWS CLI jq
         run: |
           sudo apt-get update
@@ -77,11 +68,6 @@ jobs:
          --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
             '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
             
-
-      # - name: Register new task definition
-      #   id: register-task-def
-      #   run: |
-      #       aws ecs register-task-definition --cli-input-json file://new_task_definition.json
       - name: Register new task definition
         id: register-task-def
         run: |
