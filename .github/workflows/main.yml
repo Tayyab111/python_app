@@ -61,7 +61,7 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
           --query 'taskDefinition' > ecs_task_definition.json
-
+          echo ecs_task_definition.json
       - name: Update container image in task definition
         run: |
          jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
