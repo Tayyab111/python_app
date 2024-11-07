@@ -9,8 +9,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import os
 host = os.environ['DB_HOST']
 user = os.environ['DB_USER']
-password = os.environ["DB_PASSWORD"]
-#password = "3f6K9oX9"
+#password = os.environ["DB_PASSWORD"]
+password = "cXoD47m2c"
 database = os.environ["DB_NAME"]
 
 # Function to connect to MySQL
