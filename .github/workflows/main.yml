@@ -2,17 +2,6 @@ name: Deploy to Amazon ECS
 
 on:
   push
-
-# env:
-#   AWS_REGION: MY_AWS_REGION                   # set this to your preferred AWS region, e.g. us-west-1
-#   ECR_REPOSITORY: MY_ECR_REPOSITORY           # set this to your Amazon ECR repository name
-#   ECS_SERVICE: MY_ECS_SERVICE                 # set this to your Amazon ECS service name
-#   ECS_CLUSTER: MY_ECS_CLUSTER                 # set this to your Amazon ECS cluster name
-#   ECS_TASK_DEFINITION: MY_ECS_TASK_DEFINITION # set this to the path to your Amazon ECS task definition
-#                                                # file, e.g. .aws/task-definition.json
-#   CONTAINER_NAME: MY_CONTAINER_NAME           # set this to the name of the container in the
-#                                                # containerDefinitions section of your task definition
-
 jobs:
   deploy:
     name: Deploy
@@ -56,56 +45,42 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y awscli jq
 
-      - name: Fetch current task definition
-        id: get-task-def
-        run: |
-          aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
-          --query 'taskDefinition' > ecs_task_definition.json
-          cat ecs_task_definition.json
-      - name: Update container image in task definition
-        run: |
-         jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
-         --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
-            '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
+      # - name: Fetch current task definition
+      #   id: get-task-def
+      #   run: |
+      #     aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
+      #     --query 'taskDefinition' > ecs_task_definition.json
+      #     cat ecs_task_definition.json
+      # - name: Update container image in task definition
+      #   run: |
+      #    jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
+      #    --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
+      #       '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
             
-      - name: Register new task definition
-        id: register-task-def
-        run: |
-          TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://new_task_definition.json --query 'taskDefinition.taskDefinitionArn' --output text)
-          echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
+      # - name: Register new task definition
+      #   id: register-task-def
+      #   run: |
+      #     TASK_DEF_ARN=$(aws ecs register-task-definition --cli-input-json file://new_task_definition.json --query 'taskDefinition.taskDefinitionArn' --output text)
+      #     echo "TASK_DEF_ARN=$TASK_DEF_ARN" >> $GITHUB_ENV
 # ###############
-# TASK_DEFINITION=\$(aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} --region=us-east-1)
-# # Update the task definition with the new image
-#           NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "654654575882.dkr.ecr.us-east-1.amazonaws.com/new-ecr:060a4569df77b51080dc56680a1cd3ab0c69a0ba" \
-#             '.taskDefinition |
-#             .containerDefinitions[0].image = $IMAGE |
-#             del(.taskDefinitionArn) |
-#             del(.revision) |
-#             del(.status) |
-#             del(.requiresAttributes) |
-#             del(.compatibilities)')
-#  # Register the updated task definition
-#           NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-#             --region us-east-1 \
-#             --cli-input-json "$NEW_TASK_DEFINITION" \
-#             --query 'taskDefinition.taskDefinitionArn' --output text)
-# # Update the ECS service to use the new task definition
-#           aws ecs update-service --cluster python_ecs_cluster \
-#             --service python_service \
-#             --task-definition $NEW_TASK_DEF_ARN \
-#             --region $AWS_REGION
- #-----------------------------------
-      - name: Log task definition ARN
-        run: |
-          echo "Task Definition ARN: ${{ env.TASK_DEF_ARN }}"
+      - name: fatch, update task-definition, 
+        run: | 
+          TASK_DEFINITION=\$(aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION}} --region=us-east-1)
+          NEW_TASK_DEFINTIION=\$(echo \$TASK_DEFINITION | jq --arg IMAGE 654654575882.dkr.ecr.\us-east-1.amazonaws.com/new-ecr:\$hash '.taskDefinition | .containerDefinitions[0].image = \$IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)')
+          aws ecs register-task-definition --region=us-east-1 --cli-input-json "\$NEW_TASK_DEFINTIION"
+          aws ecs update-service --cluster \python_ecs_cluster --service \python_service --task-definition \${{ vars.ECS_TASK_DEFINITION}} --region=us-east-1
+#-----------------------------------
+      # - name: Log task definition ARN
+      #   run: |
+      #     echo "Task Definition ARN: ${{ env.TASK_DEF_ARN }}"
 
-      - name: Deploy Amazon ECS task definition
-      # Update the ECS service with the new task definition
-        run: |
-          aws ecs update-service \
-           --cluster python_ecs_cluster \
-           --service python_service \
-           --task-definition ${{ env.TASK_DEF_ARN }} \
-           --force-new-deployment \
-           --region us-east-1 #$AWS_REGION 
+      # - name: Deploy Amazon ECS task definition
+      # # Update the ECS service with the new task definition
+      #   run: |
+      #     aws ecs update-service \
+      #      --cluster python_ecs_cluster \
+      #      --service python_service \
+      #      --task-definition ${{ env.TASK_DEF_ARN }} \
+      #      --force-new-deployment \
+      #      --region us-east-1 #$AWS_REGION 
 # #--task-definition ${{ env.TASK_DEF_ARN }} \
