@@ -4,7 +4,7 @@ on:
   push
 jobs:
   deploy:
-    name: Deploy
+    name: Deployp
     runs-on: ubuntu-latest
     #environment: production
 
