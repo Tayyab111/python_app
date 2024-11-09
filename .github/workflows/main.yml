@@ -65,7 +65,7 @@ jobs:
               '.containerDefinitions |= map(
                  if .name == $CONTAINER_NAME then 
                    .image = $IMAGE_URI | 
-                   .secrets = [{"name": "DB_PASSWORDD", "valueFrom": $SECRET_MANAGER_ARN}]
+                   .secrets = [{"name": "DB_PASSWORD", "valueFrom": $SECRET_MANAGER_ARN}]
                  else . end
                ) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy, .deregisteredAt)' \
                ecs_task_definition.json > new_task_definition.json
