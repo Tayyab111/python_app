@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY: new-ecr                                                                                     # set this to your Amazon ECR repository name
   ECS_SERVICE: python_service                                                                                 # set this to your Amazon ECS service name
   ECS_CLUSTER: python_ecs_cluster                                                                             # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: arn:aws:ecs:us-east-1:654654575882:task-definition/Farget_task_definition:143          # set this to the path to your Amazon ECS task definition
+  #ECS_TASK_DEFINITION: arn:aws:ecs:us-east-1:654654575882:task-definition/Farget_task_definition:143          # set this to the path to your Amazon ECS task definition
                                                                                                               # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: python_contianer                                                                            # set this to the name of the container in the
                                                                                                               # containerDefinitions section of your task definition
