@@ -11,7 +11,7 @@ env:
   ECS_SERVICE: python_service                                                                                 # set this to your Amazon ECS service name
   ECS_CLUSTER: python_ecs_cluster                                                                             # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: Farget_task_definition:143                                                             # set this to the path to your Amazon ECS task definition
-  ECR_REGISTRY: 654654575882.dkr.ecr.us-east-1.amazonaws.com/new-ecr                                                                                                            # file, e.g. .aws/task-definition.json
+  ECR_REGISTRY: 654654575882.dkr.ecr.us-east-1.amazonaws.com/new-ecr:latest                                                                                                            # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: python_contianer                                                                            # set this to the name of the container in the
                                                                                                               # containerDefinitions section of your task definition
 jobs:
