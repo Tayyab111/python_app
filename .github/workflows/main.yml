@@ -61,7 +61,7 @@ jobs:
       - name: Fetch current task definition
         id: get-task-def
         run: |
-          aws ecs describe-task-definition --task-definition ${{ vars.ECS_TASK_DEFINITION }} \
+          aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} \
           --query 'taskDefinition' > ecs_task_definition.json
           cat ecs_task_definition.json
       - name: Update container image in task definition
