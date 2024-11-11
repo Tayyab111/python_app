@@ -10,8 +10,8 @@ env:
   ECR_REPOSITORY: new-ecr                                                                                     # set this to your Amazon ECR repository name
   ECS_SERVICE: python_service                                                                                 # set this to your Amazon ECS service name
   ECS_CLUSTER: python_ecs_cluster                                                                             # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: Farget_task_definition:143                                                            # set this to the path to your Amazon ECS task definition
-                                                                                                              # file, e.g. .aws/task-definition.json
+  ECS_TASK_DEFINITION: Farget_task_definition:143                                                             # set this to the path to your Amazon ECS task definition
+  ECR_REGISTRY: 654654575882.dkr.ecr.us-east-1.amazonaws.com/new-ecr                                                                                                            # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: python_contianer                                                                            # set this to the name of the container in the
                                                                                                               # containerDefinitions section of your task definition
 jobs:
@@ -37,7 +37,7 @@ jobs:
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
         env:
          AWS_REGION: us-east-1
-         ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+         ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
          
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
