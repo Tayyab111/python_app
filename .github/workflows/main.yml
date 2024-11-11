@@ -42,9 +42,8 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          #ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
-          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          ECR_REGISTRY: ${{ env.ECR_REGISTRY }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           # Build a docker container and
@@ -68,7 +67,7 @@ jobs:
       - name: Update container image in task definition
         run: |
          jq --arg IMAGE_URI "${{ steps.build-image.outputs.image }}" \
-         --arg CONTAINER_NAME "${{ vars.CONTAINER_NAME }}" \
+         --arg CONTAINER_NAME "${{ env.CONTAINER_NAME }}" \
             '.containerDefinitions |= map(if .name == $CONTAINER_NAME then .image = $IMAGE_URI else . end) | del(.taskDefinitionArn,.revision,.status,.requiresAttributes, .compatibilities, .registeredAt, .registeredBy,  .deregisteredAt)'  ecs_task_definition.json > new_task_definition.json
       
 
