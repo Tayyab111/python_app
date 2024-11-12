@@ -24,7 +24,7 @@ def connect_to_mysql():
             database=database
         )
         if connection.is_connected():
-            return "Connection Established successfully and want to test again..."
+            return "Connection Established successfully with mysql...OK!"
     except mysql.connector.Error as err:
         return f"Error: {err}"
     finally:
